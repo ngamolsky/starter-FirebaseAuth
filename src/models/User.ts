@@ -61,7 +61,11 @@ export const userActions = {
     if (firebaseUser) {
       user = fromFirebaseAuthUser(firebaseUser);
 
-      await firebase.firestore().collection(USERS_COLLECTION).add(user);
+      await firebase
+        .firestore()
+        .collection(USERS_COLLECTION)
+        .doc(firebaseUser.uid)
+        .set(user);
     }
 
     return user!;
