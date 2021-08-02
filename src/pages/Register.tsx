@@ -10,14 +10,13 @@ import {
   validateEmail,
   validatePassword,
   validatePasswordsMatch,
-} from "../utils/validate";
+} from "../utils/validationUtils";
 import { Link, useHistory } from "react-router-dom";
-import useUser from "../hooks/useUser";
 import { APP_NAME } from "../constants";
+import { userActions } from "../models/User";
 
 const Register: React.FC = () => {
   const history = useHistory();
-  const [, { createEmailUser, createOrLoginGoogleUser }] = useUser();
   return (
     <Container>
       <ColorModeSwitcher my={4} mr={4} ml="auto" />
@@ -28,7 +27,7 @@ const Register: React.FC = () => {
         <Formik
           initialValues={{ email: "", password: "", confirmPassword: "" }}
           onSubmit={async ({ email, password }) => {
-            await createEmailUser(email, password);
+            await userActions.createEmailUser(email, password);
             history.push("/");
           }}
           validate={({ password, confirmPassword }) => {
@@ -80,7 +79,7 @@ const Register: React.FC = () => {
                 width="100%"
                 colorScheme="blue"
                 onClick={async () => {
-                  await createOrLoginGoogleUser();
+                  await userActions.createOrLoginGoogleUser();
                   history.push("/");
                 }}
               >
