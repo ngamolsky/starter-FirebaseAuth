@@ -1,18 +1,16 @@
-import { Spinner } from "@chakra-ui/react";
 import React from "react";
 import { Container } from "../components/Container";
 import { Toolbar } from "../components/Toolbar";
+import { UserGroup } from "../components/UserGroup";
 import useUser from "../hooks/useUser";
 
 const Home: React.FC = () => {
-  const [user, /* actions */, loading] = useUser()
+  const [user] = useUser();
   return (
     <Container>
-      {loading ? (
-        <Spinner size="xl" m="auto" />
-      ) : (
-        <Toolbar isSignedIn={!!user} user={user!} />
-      )}
+      <Toolbar>
+        <UserGroup currentUser={user!} />
+      </Toolbar>
     </Container>
   );
 };

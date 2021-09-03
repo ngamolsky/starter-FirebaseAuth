@@ -1,25 +1,10 @@
-import {
-  Box,
-  theme,
-  Heading,
-  Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Box, theme, Heading, useColorMode } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 import { APP_NAME } from "../constants";
-import useUser from "../hooks/useUser";
 
-interface ToolbarProps {
-  puzzleStartTime?: Date;
-}
-
-export const Toolbar: React.FC<ToolbarProps> = () => {
+export const Toolbar: React.FC = ({ children }) => {
   const { colorMode } = useColorMode();
-  const [user, { signOut }] = useUser();
   const isDark = colorMode === "dark";
 
   return (
@@ -31,29 +16,12 @@ export const Toolbar: React.FC<ToolbarProps> = () => {
       zIndex={2}
       pos="sticky"
       top={0}
+      minH="64px"
     >
-      <Heading my="auto" ml={4} textAlign="start" as="a">
-        {APP_NAME}
+      <Heading my="auto" ml={4} textAlign="start">
+        <Link to="/">{APP_NAME}</Link>
       </Heading>
-      <Box ml="auto">
-        {user && (
-          <Menu>
-            <MenuButton my={2} mr={2}>
-              <Avatar name={user.displayName ? user.displayName : user.email} />
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                mx={1}
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                Logout
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        )}
-      </Box>
+      <Box ml="auto">{children}</Box>
     </Box>
   );
 };

@@ -1,17 +1,25 @@
 import { Spinner } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import useUser from "../hooks/useUser";
+import UserContext from "../contexts/UserContext";
+import useQueryParams from "../hooks/useQueryParams";
 import { Container } from "./Container";
 
 export const ProtectedRoute: React.FC<RouteProps> = ({ children, ...rest }) => {
-  const [user, loading] = useUser();
-  if (loading)
+  const queryParams = useQueryParams();
+  const { firebaseUser, authLoading } = useContext(UserContext);
+  const continueUrl = queryParams.get("continueUrl");
+  if (authLoading)
     return (
       <Container>
         <Spinner size="xl" m="auto" />
       </Container>
     );
-  if (!user) return <Redirect to="/login" />;
+  if (!firebaseUser) {
+    const nextUrl = continueUrl
+      ? `/login?continueUrl=${continueUrl}`
+      : "/login";
+    return <Redirect to={nextUrl} />;
+  }
   return <Route {...rest}>{children}</Route>;
 };

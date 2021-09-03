@@ -1,36 +1,34 @@
-import * as React from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import { ChakraProvider, Box, theme } from "@chakra-ui/react";
-import { FirebaseAuthProvider } from "@react-firebase/auth";
-import { firebaseConfig } from "./config/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Box } from "@chakra-ui/react";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import UserContext from "./contexts/UserContext";
 
 export const App = () => {
+  const auth = firebase.auth();
+  const [firebaseUser, authLoading, authError] = useAuthState(auth);
   return (
-    <ChakraProvider theme={theme}>
+    <UserContext.Provider value={{ firebaseUser, authLoading, authError }}>
       <Router>
-        <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
-          <Box textAlign="center" fontSize="xl">
-            <Switch>
-              <Route path="/login">
-                <Login />
-              </Route>
-              <Route path="/register">
-                <Register />
-              </Route>
-              <ProtectedRoute path="/">
-                <Home />
-              </ProtectedRoute>
-            </Switch>
-          </Box>
-        </FirebaseAuthProvider>
+        <Box textAlign="center" fontSize="xl">
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <ProtectedRoute path="/">
+              <Home />
+            </ProtectedRoute>
+          </Switch>
+        </Box>
       </Router>
-    </ChakraProvider>
+    </UserContext.Provider>
   );
 };
